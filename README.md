@@ -14,11 +14,11 @@ As a person who needs food, charity organizations or shelter, I would like see t
 ![alt text](docs/sprint1/architecture.png)
 
 ## Technology Stack
-Database: MongoDB
-API: Google Maps
-Authentication: OAuth
-IDE: Android Studio
-MBaaS: Firebase
+* Database: MongoDB
+* API: Google Maps
+* Authentication: OAuth
+* IDE: Android Studio
+* MBaaS: Firebase
 
 ## Task Assignments
 Refer to docs/sprints
