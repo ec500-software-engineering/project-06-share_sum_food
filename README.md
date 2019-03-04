@@ -9,3 +9,19 @@ This Android application aims to extend community involvements that restaurants,
 As a restaurant/cafe owner or university caterer, I would like to be able to log in to my account and share a status when I have food available to share
 
 As a person who needs food, charity organizations or shelter, I would like see the amount of food available around me.
+
+## Architecture
+![alt text](docs/sprint1/architecture.png)
+
+## Technology Stack
+Database: MongoDB
+API: Google Maps
+Authentication: OAuth
+IDE: Android Studio
+MBaaS: Firebase
+
+## Task Assignments
+Refer to docs/sprints
+
+## Authors
+Huzefa Mandviwala, Charles Thao
