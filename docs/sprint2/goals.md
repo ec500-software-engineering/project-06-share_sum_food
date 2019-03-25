@@ -1,0 +1,3 @@
+- wireframe android application
+- decide on i/o of each module (to make modularity easier in future)
+- stub functions for each module
