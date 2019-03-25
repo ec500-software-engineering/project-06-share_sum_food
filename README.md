@@ -1,27 +1,16 @@
-# Food Sharing App
-An Android Application for Food Sharing within the Boston community
+# share_sum_food
 
-## Introduction
-In the United States, some 60 million tons of food is thrown away annually. This has been a constant problem, especially when the homeless population in the US does not have a sign of dwindling. As a result, many people in the country does not have access to food despite the significant waste generated everyday in cities. 
-This Android application aims to extend community involvements that restaurants, cafes and universities can participate in as this app enables easy food sharing with people with needs.
+An application for food
 
-## User Stories
-As a restaurant/cafe owner or university caterer, I would like to be able to log in to my account and share a status when I have food available to share
+## Getting Started
 
-As a person who needs food, charity organizations or shelter, I would like see the amount of food available around me.
+This project is a starting point for a Flutter application.
 
-## Architecture
-![alt text](docs/sprint1/architecture.png)
+A few resources to get you started if this is your first Flutter project:
 
-## Technology Stack
-* Database: MongoDB
-* API: Google Maps
-* Authentication: OAuth
-* IDE: Android Studio
-* MBaaS: Firebase
+- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
 
-## Task Assignments
-Refer to docs/sprints
-
-## Authors
-Huzefa Mandviwala, Charles Thao
+For help getting started with Flutter, view our 
+[online documentation](https://flutter.io/docs), which offers tutorials, 
+samples, guidance on mobile development, and a full API reference.
