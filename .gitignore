@@ -99,6 +99,6 @@ venv.bak/
 
 # mkdocs documentation
 /site
-
+ios/Flutter
 # mypy
 .mypy_cache/
