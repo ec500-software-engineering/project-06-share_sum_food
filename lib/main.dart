@@ -1,15 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:share_sum_food/pages/landing_page.dart';
 
 bool loggedIn = false;
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-
-}
-
-final ThemeData theme = new ThemeData(
-    primarySwatch: Colors.lightBlue,
-    primaryColor: Colors.blue[50],
-    primaryColorBrightness: Brightness.light);
+void main() => runApp(LandingPage());
