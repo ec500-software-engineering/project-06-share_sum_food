@@ -24,20 +24,26 @@ class LandingPageState extends State with TickerProviderStateMixin {
             new Text("Welcome to \n Share Sum Food",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
                 textAlign: TextAlign.center),
-            new RaisedButton(
-                onPressed: _handleLogInButton, child: const Text("Log In"))
+            Container(
+              margin: const EdgeInsets.only(top: 60.0),
+              child: new MaterialButton(
+                  onPressed: _handleLogInButton,
+                  color: Theme.of(context).buttonColor,
+                  height: 40.0,
+                  child:
+                      const Text("Log In", style: TextStyle(fontSize: 20.0))),
+            ),
+            MaterialButton(
+                onPressed: _handleSignUpButton,
+                child: const Text("Don't have an account? Register",
+                    style: TextStyle(
+                        fontSize: 15.0,
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline)))
           ])),
     ]));
   }
 }
 
-Widget logInButton() {
-  child:
-  return new Container(
-//      margin: const EdgeInsets.symmetric(horizontal: 45.0),
-      child: new Container(
-          child: new RaisedButton(
-              onPressed: _handleLogInButton, child: const Text("Log In"))));
-}
-
 void _handleLogInButton() {}
+void _handleSignUpButton() {}
