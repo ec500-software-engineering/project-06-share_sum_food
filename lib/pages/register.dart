@@ -15,6 +15,12 @@ class RegisterState extends State with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var userNameField = "";
+    var passwordField = "";
+    var submitButton = RaisedButton(
+      child: Text("Register"),
+      onPressed: () => _submitButtonHandler(userNameField, passwordField),
+    );
     return Scaffold(
       appBar: new AppBar(
           title: Text("Register",
@@ -40,18 +46,45 @@ class RegisterState extends State with TickerProviderStateMixin {
                   ],
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Column(
                       children: <Widget>[
                         Text("First Name"),
                         Container(
-                            margin: new EdgeInsets.fromLTRB(50.0, 5.0, 50.0, 0),
+//                            margin: new EdgeInsets.fromLTRB(50.0, 5.0, 50.0, 0),
                             child: _firstNameBox()),
                       ],
                     ),
+                    Column(
+                      children: <Widget>[
+                        Text("Last Name"),
+                        Container(
+//                            margin: new EdgeInsets.fromLTRB(50.0, 5.0, 50.0, 0),
+                            child: _lastNameBox()),
+                      ],
+                    ),
                   ],
-                )
-
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0),
+                  child: Column(
+                    children: <Widget>[
+                      Text("Email", textAlign: TextAlign.left,),
+                    _emailBox()
+                  ],
+                )),
+                Container(
+                    margin: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0),
+                    child: Column(
+                      children: <Widget>[
+                        Text("Password", textAlign: TextAlign.left,),
+                        _pwdBox()
+                      ],
+                    )),
+                Container(
+                    margin: EdgeInsets.only(top: 30.0),
+                    child: submitButton),
               ]
             )
           )
@@ -63,7 +96,7 @@ class RegisterState extends State with TickerProviderStateMixin {
   Widget _firstNameBox() {
     var textBox = Container(
         color: Theme.of(context).buttonColor,
-        width: 75.0,
+        width: 150.0,
         margin: const EdgeInsets.symmetric(horizontal: 15.0),
         child: new TextField(
           controller: _firstNameCtl,
@@ -75,7 +108,7 @@ class RegisterState extends State with TickerProviderStateMixin {
   Widget _lastNameBox() {
     var textBox = Container(
         color: Theme.of(context).buttonColor,
-        width: 75.0,
+        width: 150.0,
         margin: const EdgeInsets.symmetric(horizontal: 15.0),
         child: new TextField(
           controller: _lastNameCtl,
@@ -84,7 +117,31 @@ class RegisterState extends State with TickerProviderStateMixin {
     return textBox;
   }
 
+  Widget _emailBox() {
+    var textBox = Container(
+        color: Theme.of(context).buttonColor,
+        width: 270.0,
+        margin: const EdgeInsets.symmetric(horizontal: 15.0),
+        child: new TextField(
+          controller: _emailCtl,
+//          decoration: new InputDecoration.collapsed(hintText: "Username"),
+        ));
+    return textBox;
+  }
 
+  Widget _pwdBox() {
+    var textBox = Container(
+        color: Theme.of(context).buttonColor,
+        width: 270.0,
+        margin: const EdgeInsets.symmetric(horizontal: 15.0),
+        child: new TextField(
+          controller: _pwdCtl,
+//          decoration: new InputDecoration.collapsed(hintText: "Username"),
+        ));
+    return textBox;
+  }
+
+  void _submitButtonHandler(String username, String password){}
 }
 
 
