@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share_sum_food/pages/log_in.dart';
 import 'package:share_sum_food/pages/theme.dart';
+import 'package:share_sum_food/pages/register.dart';
 
 class LandingPage extends StatefulWidget {
   @override
@@ -47,7 +48,15 @@ class LandingPageState extends State with TickerProviderStateMixin {
 }
 
 void _handleLogInButton() {
-  runApp(new MaterialApp(home: LogIn(), theme: appTheme));
+  runApp(
+      new MaterialApp(
+          home: LogIn(),
+          theme: appTheme));
 }
 
-void _handleSignUpButton() {}
+void _handleSignUpButton() {
+  runApp(
+      new MaterialApp(
+          home: Register(),
+          theme: appTheme));
+}
