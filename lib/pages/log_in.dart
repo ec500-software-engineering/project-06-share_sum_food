@@ -22,6 +22,7 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 
 class LogInState extends State with TickerProviderStateMixin {
   static const String TAG = "AUTH";
+  AuthStatus status = AuthStatus.SOCIAL_AUTH;
 
   TextEditingController phoneNumberController = new TextEditingController();
   TextEditingController smsCodeController = new TextEditingController();
@@ -42,7 +43,7 @@ class LogInState extends State with TickerProviderStateMixin {
   final FirebaseAuth _auth = FirebaseAuth.instance; //authentication engine
   final GoogleSignIn _googleSignIn = new GoogleSignIn();
 
-  GoogleSignInAccount _googleAccoint;
+  GoogleSignInAccount _googleAccount;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,7 @@ class LogInState extends State with TickerProviderStateMixin {
   }
 
   //Have snack bar to display error
-  showError(String msg){
+  showErrorSnackbar(String msg){
       _updateRefreshing(false);
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(content: Text(msg)),
@@ -78,10 +79,55 @@ class LogInState extends State with TickerProviderStateMixin {
   //to handle the code verified object
   Future<bool> onCodeVerified(FirebaseUser usr) async{
     final userIsValid= (usr != null && (usr.phoneNumber != null && usr.phoneNumber.isNotEmpty));
-    if (userIsValid){
+    if (userIsValid) {
       setState(() {
-
+        // Here we change the status once more to guarantee that the SMS's
+        // text input isn't available while you do any other request
+        // with the gathered data
+        this.status = AuthStatus.PROFILE_AUTH;
+        Logger.log(TAG, message: "Changed status to $status");
       });
     }
+    else {
+      showErrorSnackbar("We couldn't verify your code, please try again!");
+    }
+    return userIsValid;
   }
+
+  Future<Null> _signIn() async{
+    GoogleSignInAccount user = _googleSignIn.currentUser;
+    Logger.log(TAG, message: "New Google user as: $user");
+
+    //if there is an error message
+    final onError = (exception, stacktrace){
+      Logger.log(TAG, message: "Error from _signIn: $exception");
+      showErrorSnackbar(
+          "Couldn't log in with your Google account, please try again!");
+      user = null;
+    };
+
+    //handle sign in plz
+    if (user == null){
+      user = await _googleSignIn.signIn().catchError(onError);
+      Logger.log(TAG, message: "Received $user");
+      final GoogleSignInAuthentication googleAuth = await user.authentication;
+      Logger.log(TAG, message: "Added googleAuth: $googleAuth");
+      await _auth.signInWithCredential(
+          GoogleAuthProvider.getCredential(
+              idToken: googleAuth.idToken, accessToken: googleAuth.accessToken))
+          .catchError(onError);
+    }
+
+    if (user != null) {
+      _updateRefreshing(false);
+      this._googleAccount = user;
+      setState(() {
+        this.status = AuthStatus.PHONE_AUTH;
+        Logger.log(TAG, message: "Changed status to $status");
+      });
+      return null;
+    }
+    return null;
+  }
+
 }
