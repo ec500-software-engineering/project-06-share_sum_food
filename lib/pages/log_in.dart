@@ -168,4 +168,48 @@ class LogInState extends State with TickerProviderStateMixin {
     }
     return body;
   }
+
+  Future<Null> _submitPhoneNumber() async {
+    final error = _phoneInputValidator();
+    if (error != null) {
+      _updateRefreshing(false);
+      setState(() {
+        _errorMessage = error;
+      });
+      return null;
+    } else {
+      _updateRefreshing(false);
+      setState(() {
+        _errorMessage = null;
+      });
+      final result = await _verifyPhoneNumber();
+      Logger.log(TAG, message: "Returning $result from _submitPhoneNumber");
+      return result;
+    }
+  }
+
+  String get phoneNumber {
+    try {
+      String unmaskedText = _maskedPhoneKey.currentState?.unmaskedText;
+      if (unmaskedText != null) _phoneNumber = "+55$unmaskedText".trim();
+    } catch (error) {
+      Logger.log(TAG,
+          message: "Couldn't access state from _maskedPhoneKey: $error");
+    }
+    return _phoneNumber;
+  }
+
+  Future<Null> _verifyPhoneNumber() async {
+    Logger.log(TAG, message: "Got phone number as: ${this.phoneNumber}");
+    await _auth.verifyPhoneNumber(
+        phoneNumber: this.phoneNumber,
+        timeout: _timeOut,
+        codeSent: codeSent,
+        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+        verificationCompleted: verificationCompleted,
+        verificationFailed: verificationFailed);
+    Logger.log(TAG, message: "Returning null from _verifyPhoneNumber");
+    return null;
+  }
+
 }
