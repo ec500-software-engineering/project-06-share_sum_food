@@ -46,6 +46,12 @@ class LogInState extends State with TickerProviderStateMixin {
   GoogleSignInAccount _googleAccount;
 
   @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
 
   }
@@ -130,4 +136,36 @@ class LogInState extends State with TickerProviderStateMixin {
     return null;
   }
 
+  Future<Null> _onRefresh() async {
+    switch (this.status) {
+      case AuthStatus.SOCIAL_AUTH:
+        return await _signIn();
+        break;
+      case AuthStatus.PHONE_AUTH:
+        return await _submitPhoneNumber();
+        break;
+      case AuthStatus.SMS_AUTH:
+        return await _submitSmsCode();
+        break;
+      case AuthStatus.PROFILE_AUTH:
+        break;
+    }
+  }
+
+  Widget _buildBody() {
+    Widget body;
+    switch (this.status) {
+      case AuthStatus.SOCIAL_AUTH:
+        body = _buildSocialLoginBody();
+        break;
+      case AuthStatus.PHONE_AUTH:
+        body = _buildPhoneAuthBody();
+        break;
+      case AuthStatus.SMS_AUTH:
+      case AuthStatus.PROFILE_AUTH:
+        body = _buildSmsAuthBody();
+        break;
+    }
+    return body;
+  }
 }
