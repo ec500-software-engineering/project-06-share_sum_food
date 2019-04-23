@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share_sum_food/pages/landing_page.dart';
 import 'package:share_sum_food/pages/log_in.dart';
+import 'package:share_sum_food/pages/map_page.dart';
 
 
 class Home extends StatefulWidget {
@@ -13,7 +14,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    LandingPage(),
+    MapPage(),
     LogIn(),
     LandingPage()
   ];

@@ -6,8 +6,6 @@ class LogIn extends StatefulWidget {
 }
 
 class LogInState extends State with TickerProviderStateMixin {
-  int _currentIndex = 0;
-  final List<Widget> _children = [];
   final TextEditingController _pwdController = new TextEditingController();
   final TextEditingController _usrController = new TextEditingController();
 
@@ -21,7 +19,7 @@ class LogInState extends State with TickerProviderStateMixin {
     );
     return Scaffold(
         appBar: new AppBar(
-            title: Text("Sign In >",
+            title: Text("Sign In",
                 style: TextStyle(fontSize: 25.0))),
         body: Stack(
           fit: StackFit.expand,
