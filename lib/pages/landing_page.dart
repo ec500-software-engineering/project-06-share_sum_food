@@ -12,6 +12,7 @@ class LandingPageState extends State with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+        resizeToAvoidBottomPadding: false,
         body: Stack(fit: StackFit.expand, children: <Widget>[
       Container(
           //          margin: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -21,7 +22,7 @@ class LandingPageState extends State with TickerProviderStateMixin {
                 margin: const EdgeInsets.only(top: 80.0),
                 child: new Image(
                   image: new AssetImage("lib/pages/logo.png"),
-                  fit: BoxFit.scaleDown,
+                  fit: BoxFit.fitWidth,
                 )),
             new Text("Welcome to \n Share Sum Food",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),

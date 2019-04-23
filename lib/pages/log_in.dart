@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:share_sum_food/pages/menu_bar.dart';
 
 class LogIn extends StatefulWidget {
   @override
@@ -7,6 +6,8 @@ class LogIn extends StatefulWidget {
 }
 
 class LogInState extends State with TickerProviderStateMixin {
+  int _currentIndex = 0;
+  final List<Widget> _children = [];
   final TextEditingController _pwdController = new TextEditingController();
   final TextEditingController _usrController = new TextEditingController();
 
@@ -50,7 +51,6 @@ class LogInState extends State with TickerProviderStateMixin {
                       child: _passwordBox()),
                   Container(child: submitButton),
                   Spacer(),
-                  Container(child: bottomBar()),
                 ],
               ),
             )
