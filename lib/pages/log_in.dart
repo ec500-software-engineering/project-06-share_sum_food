@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:share_sum_food/pages/menu_bar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:share_sum_food/widgets/masked_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:share_sum_food/widgets/reactive_refresh_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_sum_food/logger.dart';
@@ -65,10 +66,56 @@ class LogInState extends State with TickerProviderStateMixin {
   }
 
   //Automatic verification android phones
-  verificationCompleted(FirebaseUser usr) async{
-    Logger.log(TAG, message: "onVerificationCompleted, user: $usr");
-//    if (await )
+  // PhoneVerificationCompleted
+  verificationCompleted(FirebaseUser user) async {
+    Logger.log(TAG, message: "onVerificationCompleted, user: $user");
+    if (await onCodeVerified(user)) {
+      await _finishSignIn(user);
+    } else {
+      setState(() {
+        this.status = AuthStatus.SMS_AUTH;
+        Logger.log(TAG, message: "Changed status to $status");
+      });
+    }
   }
+
+  // PhoneVerificationFailed
+  verificationFailed(AuthException authException) {
+    showErrorSnackbar(
+        "We couldn't verify your code for now, please try again!");
+    Logger.log(TAG,
+        message:
+        'onVerificationFailed, code: ${authException.code}, message: ${authException.message}');
+  }
+
+  // PhoneCodeSent
+  codeSent(String verificationId, [int forceResendingToken]) async {
+    Logger.log(TAG,
+        message:
+        "Verification code sent to number ${phoneNumberController.text}");
+    _timer = Timer(_timeOut, () {
+      setState(() {
+        _codeTimedOut = true;
+      });
+    });
+    _updateRefreshing(false);
+    setState(() {
+      this._verificationId = verificationId;
+      this.status = AuthStatus.SMS_AUTH;
+      Logger.log(TAG, message: "Changed status to $status");
+    });
+  }
+
+  // PhoneCodeAutoRetrievalTimeout
+  codeAutoRetrievalTimeout(String verificationId) {
+    Logger.log(TAG, message: "onCodeTimeout");
+    _updateRefreshing(false);
+    setState(() {
+      this._verificationId = verificationId;
+      this._codeTimedOut = true;
+    });
+  }
+
   //ensure animations display when it should display
   _updateRefreshing(bool isRefreshing){
     Logger.log(TAG, message: "Setting _isRefreshing ($_isRefreshing) to $isRefreshing");
@@ -136,6 +183,30 @@ class LogInState extends State with TickerProviderStateMixin {
     return null;
   }
 
+  _finishSignIn(FirebaseUser user) async {
+    await _onCodeVerified(user).then((result) {
+      if (result) {
+        // Here, instead of navigating to another screen, you should do whatever you want
+        // as the user is already verified with Firebase from both
+        // Google and phone number methods
+        // Example: authenticate with your own API, use the data gathered
+        // to post your profile/user, etc.
+
+        Navigator.of(context).pushReplacement(CupertinoPageRoute(
+          builder: (context) => MainScreen(
+            googleUser: _googleUser,
+            firebaseUser: user,
+          ),
+        ));
+      } else {
+        setState(() {
+          this.status = AuthStatus.SMS_AUTH;
+        });
+        showErrorSnackbar(
+            "We couldn't create your profile for now, please try again later");
+      }
+    });
+  }
   Future<Null> _onRefresh() async {
     switch (this.status) {
       case AuthStatus.SOCIAL_AUTH:
@@ -211,5 +282,6 @@ class LogInState extends State with TickerProviderStateMixin {
     Logger.log(TAG, message: "Returning null from _verifyPhoneNumber");
     return null;
   }
+
 
 }
