@@ -31,10 +31,14 @@ class LogInState extends State with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<MaskedTextFieldState> _maskedPhoneKey = new GlobalKey<MaskedTextFieldState>();
   //local control variables
-  String _errorMsg;
+  String _errorMessage;
   String _phoneNumber;
   String _verificationId;
   Timer _timer;
+  // Styling
+
+  final decorationStyle = TextStyle(color: Colors.grey[50], fontSize: 16.0);
+  final hintStyle = TextStyle(color: Colors.white24);
 
   bool _isRefreshing;
   bool _codeTimedOut;
@@ -222,7 +226,68 @@ class LogInState extends State with TickerProviderStateMixin {
         break;
     }
   }
+  Future<Null> _submitSmsCode() async {
+    final error = _smsInputValidator();
+    if (error != null) {
+      _updateRefreshing(false);
+      showErrorSnackbar(error);
+      return null;
+    } else {
+      if (this._codeVerified) {
+        await _finishSignIn(await _auth.currentUser());
+      } else {
+        Logger.log(TAG, message: "_signInWithPhoneNumber called");
+        await _signInWithPhoneNumber();
+      }
+      return null;
+    }
+  }
 
+  Future<void> _signInWithPhoneNumber() async {
+    final errorMessage = "We couldn't verify your code, please try again!";
+
+    await _auth
+        .linkWithCredential(
+      PhoneAuthProvider.getCredential(
+        verificationId: _verificationId,
+        smsCode: smsCodeController.text,
+      ),
+    )
+        .then((user) async {
+      await _onCodeVerified(user).then((codeVerified) async {
+        this._codeVerified = codeVerified;
+        Logger.log(
+          TAG,
+          message: "Returning ${this._codeVerified} from _onCodeVerified",
+        );
+        if (this._codeVerified) {
+          await _finishSignIn(user);
+        } else {
+          showErrorSnackbar(errorMessage);
+        }
+      });
+    }, onError: (error) {
+      print("Failed to verify SMS code: $error");
+      showErrorSnackbar(errorMessage);
+    });
+  }
+
+  Future<bool> _onCodeVerified(FirebaseUser user) async {
+    final isUserValid = (user != null &&
+        (user.phoneNumber != null && user.phoneNumber.isNotEmpty));
+    if (isUserValid) {
+      setState(() {
+        // Here we change the status once more to guarantee that the SMS's
+        // text input isn't available while you do any other request
+        // with the gathered data
+        this.status = AuthStatus.PROFILE_AUTH;
+        Logger.log(TAG, message: "Changed status to $status");
+      });
+    } else {
+      showErrorSnackbar("We couldn't verify your code, please try again!");
+    }
+    return isUserValid;
+  }
   Widget _buildBody() {
     Widget body;
     switch (this.status) {
