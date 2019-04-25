@@ -7,6 +7,7 @@ import 'package:share_sum_food/widgets/reactive_refresh_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_sum_food/logger.dart';
 import 'dart:async';
+import 'package:share_sum_food/pages/google_sign_in_button.dart';
 
 class LogIn extends StatefulWidget {
   @override
@@ -198,7 +199,7 @@ class LogInState extends State with TickerProviderStateMixin {
 
         Navigator.of(context).pushReplacement(CupertinoPageRoute(
           builder: (context) => MainScreen(
-            googleUser: _googleUser,
+            googleUser: _googleAccount,
             firebaseUser: user,
           ),
         ));
@@ -226,6 +227,17 @@ class LogInState extends State with TickerProviderStateMixin {
         break;
     }
   }
+
+  String _smsInputValidator() {
+    if (smsCodeController.text.isEmpty) {
+      return "Your verification code can't be empty!";
+    } else if (smsCodeController.text.length < 6) {
+      return "This verification code is invalid!";
+    }
+    return null;
+  }
+
+
   Future<Null> _submitSmsCode() async {
     final error = _smsInputValidator();
     if (error != null) {
@@ -288,21 +300,15 @@ class LogInState extends State with TickerProviderStateMixin {
     }
     return isUserValid;
   }
-  Widget _buildBody() {
-    Widget body;
-    switch (this.status) {
-      case AuthStatus.SOCIAL_AUTH:
-        body = _buildSocialLoginBody();
-        break;
-      case AuthStatus.PHONE_AUTH:
-        body = _buildPhoneAuthBody();
-        break;
-      case AuthStatus.SMS_AUTH:
-      case AuthStatus.PROFILE_AUTH:
-        body = _buildSmsAuthBody();
-        break;
+
+
+  String _phoneInputValidator() {
+    if (phoneNumberController.text.isEmpty) {
+      return "Your phone number can't be empty!";
+    } else if (phoneNumberController.text.length < 15) {
+      return "This phone number is invalid!";
     }
-    return body;
+    return null;
   }
 
   Future<Null> _submitPhoneNumber() async {
@@ -348,5 +354,64 @@ class LogInState extends State with TickerProviderStateMixin {
     return null;
   }
 
+  Widget _buildSocialLoginBody() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(height: 24.0),
+          GoogleSignInButton(
+            onPressed: () => _updateRefreshing(true),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPhoneAuthBody() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+          child: Text(
+            "We'll send an SMS message to verify your identity, please enter your number right below!",
+            style: decorationStyle,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+          child: Flex(
+            direction: Axis.horizontal,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Flexible(flex: 5, child: _buildPhoneNumberInput()),
+              Flexible(flex: 1, child: _buildConfirmInputButton())
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBody() {
+    Widget body;
+    switch (this.status) {
+      case AuthStatus.SOCIAL_AUTH:
+        body = _buildSocialLoginBody();
+        break;
+      case AuthStatus.PHONE_AUTH:
+        body = _buildPhoneAuthBody();
+        break;
+      case AuthStatus.SMS_AUTH:
+      case AuthStatus.PROFILE_AUTH:
+        body = _buildSmsAuthBody();
+        break;
+    }
+    return body;
+  }
 
 }
