@@ -369,6 +369,47 @@ class LogInState extends State with TickerProviderStateMixin {
     );
   }
 
+  Widget _buildPhoneNumberInput() {
+    return MaskedTextField(
+      key: _maskedPhoneKey,
+      mask: "(xxx)xxx-xxxx",
+      keyboardType: TextInputType.number,
+      maskedTextFieldController: phoneNumberController,
+      maxLength: 15,
+      onSubmitted: (text) => _updateRefreshing(true),
+      style: Theme.of(context)
+          .textTheme
+          .subhead
+          .copyWith(fontSize: 18.0, color: Colors.white),
+      inputDecoration: InputDecoration(
+        isDense: false,
+        enabled: this.status == AuthStatus.PHONE_AUTH,
+        counterText: "",
+        icon: const Icon(
+          Icons.phone,
+          color: Colors.white,
+        ),
+        labelText: "Phone",
+        labelStyle: decorationStyle,
+        hintText: "(123)456-7890",
+        hintStyle: hintStyle,
+        errorText: _errorMessage,
+      ),
+    );
+  }
+
+  Widget _buildConfirmInputButton() {
+    final theme = Theme.of(context);
+    return IconButton(
+      icon: Icon(Icons.check),
+      color: theme.accentColor,
+      disabledColor: theme.buttonColor,
+      onPressed: (this.status == AuthStatus.PROFILE_AUTH)
+          ? null
+          : () => _updateRefreshing(true),
+    );
+  }
+
   Widget _buildPhoneAuthBody() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
