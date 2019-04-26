@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 final ThemeData appTheme = new ThemeData(
-    primarySwatch: Colors.lightGreen,
-    primaryColor: Colors.lightGreen[100],
-    primaryColorBrightness: Brightness.light);
+    primarySwatch: Colors.indigo,
+    primaryColor: Colors.indigo[400],
+    primaryColorBrightness: Brightness.light,
+);
