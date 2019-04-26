@@ -12,11 +12,14 @@ class bottomBar extends StatelessWidget {
     return BottomNavigationBar(
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-            icon: new Icon(Icons.home), title: Text('Home')),
+            icon: new Icon(Icons.home),
+            title: Text('Home')),
         BottomNavigationBarItem(
-            icon: new Icon(Icons.list), title: Text('List')),
+            icon: new Icon(Icons.list),
+            title: Text('List')),
         BottomNavigationBarItem(
-            icon: new Icon(Icons.settings), title: Text('Settings')),
+            icon: new Icon(Icons.settings),
+            title: Text('Settings')),
       ],
 //    currentIndex: _selectedIndex,
     );
