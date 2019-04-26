@@ -8,6 +8,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_sum_food/logger.dart';
 import 'dart:async';
 import 'package:share_sum_food/pages/google_sign_in_button.dart';
+import 'package:share_sum_food/pages/main_screen.dart';
+
+
 
 class LogIn extends StatefulWidget {
   @override
@@ -15,12 +18,12 @@ class LogIn extends StatefulWidget {
 }
 enum AuthStatus { SOCIAL_AUTH, PHONE_AUTH, SMS_AUTH, PROFILE_AUTH }
 
-GoogleSignIn _googleSignIn = GoogleSignIn(
-  scopes: <String>[
-    'email',
-    'https://www.googleapis.com/auth/contacts.readonly',
-  ],
-);
+//GoogleSignIn _googleSignIn = GoogleSignIn(
+//  scopes: <String>[
+//    'email',
+//    'https://www.googleapis.com/auth/contacts.readonly',
+//  ],
+//);
 
 class LogInState extends State with TickerProviderStateMixin {
   static const String TAG = "AUTH";
@@ -41,9 +44,9 @@ class LogInState extends State with TickerProviderStateMixin {
   final decorationStyle = TextStyle(color: Colors.grey[50], fontSize: 16.0);
   final hintStyle = TextStyle(color: Colors.white24);
 
-  bool _isRefreshing;
-  bool _codeTimedOut;
-  bool _codeVerified;
+  bool _isRefreshing = false;
+  bool _codeTimedOut = false;
+  bool _codeVerified = false;
   Duration _timeOut = new Duration(minutes: 2);
 
   final FirebaseAuth _auth = FirebaseAuth.instance; //authentication engine
@@ -59,11 +62,22 @@ class LogInState extends State with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(elevation: 0.0),
+      backgroundColor: Theme.of(context).primaryColor,
+      body: Container(
+        child: ReactiveRefreshIndicator(
+          onRefresh: _onRefresh,
+          isRefreshing: _isRefreshing,
+          child: Container(child: _buildBody()),
+        ),
+      ),
+    );
   }
 
   //Have snack bar to display error
-  showErrorSnackbar(String msg){
+  _showErrorSnackbar(String msg){
       _updateRefreshing(false);
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(content: Text(msg)),
@@ -72,7 +86,7 @@ class LogInState extends State with TickerProviderStateMixin {
 
   //Automatic verification android phones
   // PhoneVerificationCompleted
-  verificationCompleted(FirebaseUser user) async {
+  _verificationCompleted(FirebaseUser user) async {
     Logger.log(TAG, message: "onVerificationCompleted, user: $user");
     if (await onCodeVerified(user)) {
       await _finishSignIn(user);
@@ -85,8 +99,8 @@ class LogInState extends State with TickerProviderStateMixin {
   }
 
   // PhoneVerificationFailed
-  verificationFailed(AuthException authException) {
-    showErrorSnackbar(
+  _verificationFailed(AuthException authException) {
+    _showErrorSnackbar(
         "We couldn't verify your code for now, please try again!");
     Logger.log(TAG,
         message:
@@ -94,7 +108,7 @@ class LogInState extends State with TickerProviderStateMixin {
   }
 
   // PhoneCodeSent
-  codeSent(String verificationId, [int forceResendingToken]) async {
+  _codeSent(String verificationId, [int forceResendingToken]) async {
     Logger.log(TAG,
         message:
         "Verification code sent to number ${phoneNumberController.text}");
@@ -112,7 +126,7 @@ class LogInState extends State with TickerProviderStateMixin {
   }
 
   // PhoneCodeAutoRetrievalTimeout
-  codeAutoRetrievalTimeout(String verificationId) {
+  _codeAutoRetrievalTimeout(String verificationId) {
     Logger.log(TAG, message: "onCodeTimeout");
     _updateRefreshing(false);
     setState(() {
@@ -147,7 +161,7 @@ class LogInState extends State with TickerProviderStateMixin {
       });
     }
     else {
-      showErrorSnackbar("We couldn't verify your code, please try again!");
+      _showErrorSnackbar("We couldn't verify your code, please try again!");
     }
     return userIsValid;
   }
@@ -159,7 +173,7 @@ class LogInState extends State with TickerProviderStateMixin {
     //if there is an error message
     final onError = (exception, stacktrace){
       Logger.log(TAG, message: "Error from _signIn: $exception");
-      showErrorSnackbar(
+      _showErrorSnackbar(
           "Couldn't log in with your Google account, please try again!");
       user = null;
     };
@@ -207,7 +221,7 @@ class LogInState extends State with TickerProviderStateMixin {
         setState(() {
           this.status = AuthStatus.SMS_AUTH;
         });
-        showErrorSnackbar(
+        _showErrorSnackbar(
             "We couldn't create your profile for now, please try again later");
       }
     });
@@ -242,7 +256,7 @@ class LogInState extends State with TickerProviderStateMixin {
     final error = _smsInputValidator();
     if (error != null) {
       _updateRefreshing(false);
-      showErrorSnackbar(error);
+      _showErrorSnackbar(error);
       return null;
     } else {
       if (this._codeVerified) {
@@ -275,12 +289,12 @@ class LogInState extends State with TickerProviderStateMixin {
         if (this._codeVerified) {
           await _finishSignIn(user);
         } else {
-          showErrorSnackbar(errorMessage);
+          _showErrorSnackbar(errorMessage);
         }
       });
     }, onError: (error) {
       print("Failed to verify SMS code: $error");
-      showErrorSnackbar(errorMessage);
+      _showErrorSnackbar(errorMessage);
     });
   }
 
@@ -296,7 +310,7 @@ class LogInState extends State with TickerProviderStateMixin {
         Logger.log(TAG, message: "Changed status to $status");
       });
     } else {
-      showErrorSnackbar("We couldn't verify your code, please try again!");
+      _showErrorSnackbar("We couldn't verify your code, please try again!");
     }
     return isUserValid;
   }
@@ -346,10 +360,10 @@ class LogInState extends State with TickerProviderStateMixin {
     await _auth.verifyPhoneNumber(
         phoneNumber: this.phoneNumber,
         timeout: _timeOut,
-        codeSent: codeSent,
-        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
-        verificationCompleted: verificationCompleted,
-        verificationFailed: verificationFailed);
+        codeSent: _codeSent,
+        codeAutoRetrievalTimeout: _codeAutoRetrievalTimeout,
+        verificationCompleted: _verificationCompleted,
+        verificationFailed: _verificationFailed);
     Logger.log(TAG, message: "Returning null from _verifyPhoneNumber");
     return null;
   }
@@ -438,6 +452,89 @@ class LogInState extends State with TickerProviderStateMixin {
     );
   }
 
+  Widget _buildResendSmsWidget() {
+    return InkWell(
+      onTap: () async {
+        if (_codeTimedOut) {
+          await _verifyPhoneNumber();
+        } else {
+          _showErrorSnackbar("You can't retry yet!");
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            text: "If your code does not arrive in 1 minute, touch",
+            style: decorationStyle,
+            children: <TextSpan>[
+              TextSpan(
+                text: " here",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSmsAuthBody() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+          child: Text(
+            "Verification code",
+            style: decorationStyle,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 64.0),
+          child: Flex(
+            direction: Axis.horizontal,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Flexible(flex: 5, child: _buildSmsCodeInput()),
+              Flexible(flex: 2, child: _buildConfirmInputButton())
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: _buildResendSmsWidget(),
+        )
+      ],
+    );
+  }
+
+  Widget _buildSmsCodeInput() {
+    final enabled = this.status == AuthStatus.SMS_AUTH;
+    return TextField(
+      keyboardType: TextInputType.number,
+      enabled: enabled,
+      textAlign: TextAlign.center,
+      controller: smsCodeController,
+      maxLength: 6,
+      onSubmitted: (text) => _updateRefreshing(true),
+      style: Theme.of(context).textTheme.subhead.copyWith(
+        fontSize: 32.0,
+        color: enabled ? Colors.white : Theme.of(context).buttonColor,
+      ),
+      decoration: InputDecoration(
+        counterText: "",
+        enabled: enabled,
+        hintText: "--- ---",
+        hintStyle: hintStyle.copyWith(fontSize: 42.0),
+      ),
+    );
+  }
   Widget _buildBody() {
     Widget body;
     switch (this.status) {
