@@ -1,21 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:share_sum_food/pages/menu_bar.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class List extends StatelessWidget {
+  
+  Widget _buildListItem(BuildContext context, DocumentSnapshot doc) {
+    return ListTile(
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(
+              doc['FoodType'],
+            ),
+          ),
+        Container(
+          child: Text(
+            doc['Location'].toString(),
+          ),
+          ),
+        ],
+      ),
+      );
+  }
+  
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            child: ListView(
-
-            )
-          )
-        ],
-      )
-    );
+    return Scaffold(
+      body: StreamBuilder(
+        stream: Firestore.instance.collection('food').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const Text('Loading...');
+          return ListView.builder(
+          itemExtent: 80.0,
+          itemCount: snapshot.data.documents.length,
+          itemBuilder: (context, index) =>
+            _buildListItem(context, snapshot.data.documents[index]),
+            );
+        }),
+      );
   }
 }
 
