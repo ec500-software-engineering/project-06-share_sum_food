@@ -11,6 +11,8 @@ class _AddFoodState extends State<AddFood> {
   String foodType;
   String location;
 
+  QuerySnapshot food;
+
   crudMethods crudObj = new crudMethods();
 
   Future<bool> addDialog(BuildContext context) async {
@@ -80,19 +82,57 @@ class _AddFoodState extends State<AddFood> {
   }
 
   @override
+  void initState(){
+    crudObj.getData().then((results) {
+      setState(() {
+        food = results;
+      });
+    });
+    super.initState();
+  }
+
+  @override
   Widget build (BuildContext context){
      return new Scaffold(
         appBar: AppBar(
-          title: Text('Dashboard'),
+          title: Text('Add sum food to share'),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
                 addDialog(context);
               },
+            ),
+            IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                crudObj.getData().then((results) {
+                  setState(() {
+                    food = results;
+                  });
+                });
+              },
             )
           ],
         ),
-        body: Center());
+        body: _foodList());
+  }
+
+  Widget _foodList(){
+    if (food != null) {
+      return ListView.builder(
+        itemCount: food.documents.length,
+        padding: EdgeInsets.all(5.0),
+        itemBuilder: (context, i) {
+          return new ListTile(
+            title: Text(food.documents[i].data['FoodType']),
+            subtitle: Text(food.documents[i].data['Location'].toString()),
+          );
+        }
+      );
+    }
+    else {
+      return Text('Loading...');
+    }
   }
 }
