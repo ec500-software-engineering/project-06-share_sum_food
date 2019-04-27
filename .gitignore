@@ -13,8 +13,8 @@ develop-eggs/
 dist/
 downloads/
 eggs/
+android/app/google-services.json
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -102,3 +102,4 @@ venv.bak/
 ios/Flutter/
 # mypy
 .mypy_cache/
+.idea/*
