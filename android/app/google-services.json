@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "579300111500",
+    "firebase_url": "https://share-sum-food.firebaseio.com",
+    "project_id": "share-sum-food",
+    "storage_bucket": "share-sum-food.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:579300111500:android:49728817b7b5ad71",
+        "android_client_info": {
+          "package_name": "com.team6.share_sum_food"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "579300111500-mk3ndau7cmlbo8a2kbh92gtv422l3utr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2bm1tBN_-nqFUGz4MxQbx0p3NguY2EBQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "579300111500-mk3ndau7cmlbo8a2kbh92gtv422l3utr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
