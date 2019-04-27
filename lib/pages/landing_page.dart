@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:share_sum_food/pages/log_in.dart';
+import 'package:share_sum_food/retired/log_in.dart';
 import 'package:share_sum_food/pages/theme.dart';
-import 'package:share_sum_food/pages/register.dart';
+import 'package:share_sum_food/retired/register.dart';
 import 'package:share_sum_food/pages/google_signin.dart';
-
-
+import 'package:share_sum_food/pages/google_sign_in_button.dart';
 class LandingPage extends StatefulWidget {
   @override
   State createState() => new LandingPageState();
@@ -17,7 +16,7 @@ class LandingPageState extends State with TickerProviderStateMixin {
         body: Stack(fit: StackFit.expand, children: <Widget>[
       Container(
           //          margin: const EdgeInsets.symmetric(horizontal: 10.0),
-          decoration: BoxDecoration(color: Colors.lightGreen[100]),
+          decoration: BoxDecoration(color: Theme.of(context).primaryColorLight),
           child: new Column(children: <Widget>[
             new Container(
                 margin: const EdgeInsets.only(top: 80.0),
@@ -29,17 +28,11 @@ class LandingPageState extends State with TickerProviderStateMixin {
                 })
             ),
             new Text("Welcome to \n Share Sum Food",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
+                style: TextStyle(fontFamily: "Roboto", fontSize: 30.0),
                 textAlign: TextAlign.center),
             Container(
               margin: const EdgeInsets.only(top: 60.0),
-              child: new RaisedButton(
-                  onPressed: _handleLogInButton,
-                  color: Colors.grey[100],
-                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0)),
-                  child:
-                      const Text("Log In With Google", style: TextStyle(fontSize: 20.0))),
-            ),
+              child: GoogleSignInButton(onPressed: () => {}))
 //            MaterialButton(
 //                onPressed: _handleSignUpButton,
 //                child: const Text("Don't have an account? Register",
