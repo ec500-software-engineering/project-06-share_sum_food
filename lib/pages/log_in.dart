@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_sum_food/pages/menu_bar.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:share_sum_food/widgets/masked_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,25 +54,32 @@ class LogInState extends State with TickerProviderStateMixin {
   final GoogleSignIn _googleSignIn = new GoogleSignIn();
 
   GoogleSignInAccount _googleAccount;
-
   @override
   void dispose() {
     _timer?.cancel();
     super.dispose();
   }
 
+  bool _visible = true;
   @override
   Widget build(BuildContext context) {
+//    Logger.log(TAG , message: _googleAccount.email);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(elevation: 0.0),
       backgroundColor: Theme.of(context).primaryColor,
-      body: Container(
-        child: ReactiveRefreshIndicator(
-          onRefresh: _onRefresh,
-          isRefreshing: _isRefreshing,
-          child: Container(child: _buildBody()),
-        ),
+      body:
+      Column(
+        children: <Widget>[
+
+          Container(
+            child: ReactiveRefreshIndicator(
+              onRefresh: _onRefresh,
+              isRefreshing: _isRefreshing,
+              child: Container(child: _buildBody()),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -210,13 +218,16 @@ class LogInState extends State with TickerProviderStateMixin {
         // Google and phone number methods
         // Example: authenticate with your own API, use the data gathered
         // to post your profile/user, etc.
-
-        Navigator.of(context).pushReplacement(CupertinoPageRoute(
-          builder: (context) => MainScreen(
+        runApp(new MaterialApp(home: MainScreen(
             googleUser: _googleAccount,
-            firebaseUser: user,
-          ),
-        ));
+            firebaseUser: user
+          )));
+//        Navigator.of(context).pushReplacement(CupertinoPageRoute(
+//          builder: (context) => MainScreen(
+//            googleUser: _googleAccount,
+//            firebaseUser: user,
+//          ),
+//        ));
       } else {
         setState(() {
           this.status = AuthStatus.SMS_AUTH;
@@ -319,7 +330,7 @@ class LogInState extends State with TickerProviderStateMixin {
   String _phoneInputValidator() {
     if (phoneNumberController.text.isEmpty) {
       return "Your phone number can't be empty!";
-    } else if (phoneNumberController.text.length < 15) {
+    } else if (phoneNumberController.text.length < 9) {
       return "This phone number is invalid!";
     }
     return null;
@@ -347,7 +358,7 @@ class LogInState extends State with TickerProviderStateMixin {
   String get phoneNumber {
     try {
       String unmaskedText = _maskedPhoneKey.currentState?.unmaskedText;
-      if (unmaskedText != null) _phoneNumber = "+55$unmaskedText".trim();
+      if (unmaskedText != null) _phoneNumber = "+1$unmaskedText".trim();
     } catch (error) {
       Logger.log(TAG,
           message: "Couldn't access state from _maskedPhoneKey: $error");
@@ -374,6 +385,22 @@ class LogInState extends State with TickerProviderStateMixin {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          AnimatedOpacity(
+            opacity: _visible ? 1.0 : 0.0,
+            duration: Duration(milliseconds: 2000),
+            child: new Container(
+//                margin: const EdgeInsets.only(top: 30.0),
+                child: new LayoutBuilder(builder: (context, constraint) {
+                  return new Image(
+                    image: new AssetImage("lib/pages/logo.png"),
+                    fit: BoxFit.scaleDown,
+                  );
+                })
+            ),
+          ),
+          new Text("Welcome to \n Share Sum Food",
+              style: TextStyle(fontFamily: "Roboto", fontSize: 30.0),
+              textAlign: TextAlign.center),
           SizedBox(height: 24.0),
           GoogleSignInButton(
             onPressed: () => _updateRefreshing(true),
