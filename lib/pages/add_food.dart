@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'services/crud.dart';
+import 'package:share_sum_food/pages/menu_bar.dart';
+
 
 class AddFood extends StatefulWidget{
   @override
@@ -115,7 +117,15 @@ class _AddFoodState extends State<AddFood> {
             )
           ],
         ),
-        body: _foodList());
+        body: Column(
+          children: <Widget>[
+            Flexible(
+              child: _foodList()
+            ),
+            bottomBar(),
+          ],
+        ),
+     );
   }
 
   Widget _foodList(){
