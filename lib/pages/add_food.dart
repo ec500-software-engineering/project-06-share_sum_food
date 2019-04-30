@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'services/crud.dart';
-import 'package:share_sum_food/pages/menu_bar.dart';
 
 
 class AddFood extends StatefulWidget{
@@ -122,7 +121,6 @@ class _AddFoodState extends State<AddFood> {
             Flexible(
               child: _foodList()
             ),
-            bottomBar(),
           ],
         ),
      );
