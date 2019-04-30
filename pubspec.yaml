@@ -25,7 +25,8 @@ dependencies:
   firebase_auth:
   transparent_image: 1.0.0
   cloud_firestore: 0.9.13+1
-  google_maps_flutter: 
+  google_maps_flutter:
+  geolocator:
   flutter:
     sdk: flutter
 
