@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_sum_food/pages/add_food.dart';
+import 'package:share_sum_food/pages/map_page.dart';
 
 class Home extends StatefulWidget {
  @override
@@ -12,7 +13,7 @@ class _HomeState extends State<Home> {
  int _currentIndex = 1;
  final List<Widget> _children = [
    AddFood(),
-   AddFood(),
+   MapPage(),
    AddFood(),
  ];
 
@@ -25,12 +26,12 @@ class _HomeState extends State<Home> {
        currentIndex: _currentIndex,
        items: [
          BottomNavigationBarItem(
-           icon: new Icon(Icons.home),
-           title: new Text('Home'),
-         ),
-         BottomNavigationBarItem(
            icon: new Icon(Icons.list),
            title: new Text('List'),
+         ),
+         BottomNavigationBarItem(
+           icon: new Icon(Icons.map),
+           title: new Text('Map'),
          ),
          BottomNavigationBarItem(
            icon: Icon(Icons.settings),
