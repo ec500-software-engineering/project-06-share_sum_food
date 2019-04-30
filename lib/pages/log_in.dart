@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:share_sum_food/pages/menu_bar.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:share_sum_food/widgets/masked_text.dart';

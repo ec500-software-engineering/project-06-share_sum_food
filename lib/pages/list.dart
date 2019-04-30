@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:share_sum_food/pages/menu_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class List extends StatelessWidget {
@@ -41,7 +40,6 @@ class List extends StatelessWidget {
                   );
               }),
           ),
-          bottomBar(),
         ],
       ),
       );
