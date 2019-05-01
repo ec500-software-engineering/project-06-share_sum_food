@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:share_sum_food/widgets/masked_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,13 +16,6 @@ class LogIn extends StatefulWidget {
   State createState() => new LogInState();
 }
 enum AuthStatus { SOCIAL_AUTH, PHONE_AUTH, SMS_AUTH, PROFILE_AUTH }
-
-//GoogleSignIn _googleSignIn = GoogleSignIn(
-//  scopes: <String>[
-//    'email',
-//    'https://www.googleapis.com/auth/contacts.readonly',
-//  ],
-//);
 
 class LogInState extends State with TickerProviderStateMixin {
   static const String TAG = "AUTH";
