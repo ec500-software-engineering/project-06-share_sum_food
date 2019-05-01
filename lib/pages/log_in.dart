@@ -39,7 +39,7 @@ class LogInState extends State with TickerProviderStateMixin {
   String _errorMessage;
   String _phoneNumber;
   String _verificationId;
-  Timer _timer;
+  Timer _codeTimer;
   // Styling
 
   final decorationStyle = TextStyle(color: Colors.grey[50], fontSize: 16.0);
@@ -56,7 +56,7 @@ class LogInState extends State with TickerProviderStateMixin {
   GoogleSignInAccount _googleAccount;
   @override
   void dispose() {
-    _timer?.cancel();
+    _codeTimer?.cancel();
     super.dispose();
   }
 
@@ -92,11 +92,10 @@ class LogInState extends State with TickerProviderStateMixin {
       );
   }
 
-  //Automatic verification android phones
   // PhoneVerificationCompleted
-  _verificationCompleted(FirebaseUser user) async {
+  verificationCompleted(FirebaseUser user) async {
     Logger.log(TAG, message: "onVerificationCompleted, user: $user");
-    if (await onCodeVerified(user)) {
+    if (await _onCodeVerified(user)) {
       await _finishSignIn(user);
     } else {
       setState(() {
@@ -107,7 +106,7 @@ class LogInState extends State with TickerProviderStateMixin {
   }
 
   // PhoneVerificationFailed
-  _verificationFailed(AuthException authException) {
+  verificationFailed(AuthException authException) {
     _showErrorSnackbar(
         "We couldn't verify your code for now, please try again!");
     Logger.log(TAG,
@@ -115,12 +114,13 @@ class LogInState extends State with TickerProviderStateMixin {
         'onVerificationFailed, code: ${authException.code}, message: ${authException.message}');
   }
 
+
   // PhoneCodeSent
-  _codeSent(String verificationId, [int forceResendingToken]) async {
+  codeSent(String verificationId, [int forceResendingToken]) async {
     Logger.log(TAG,
         message:
         "Verification code sent to number ${phoneNumberController.text}");
-    _timer = Timer(_timeOut, () {
+    _codeTimer = Timer(_timeOut, () {
       setState(() {
         _codeTimedOut = true;
       });
@@ -134,7 +134,8 @@ class LogInState extends State with TickerProviderStateMixin {
   }
 
   // PhoneCodeAutoRetrievalTimeout
-  _codeAutoRetrievalTimeout(String verificationId) {
+  // PhoneCodeAutoRetrievalTimeout
+  codeAutoRetrievalTimeout(String verificationId) {
     Logger.log(TAG, message: "onCodeTimeout");
     _updateRefreshing(false);
     setState(() {
@@ -143,9 +144,10 @@ class LogInState extends State with TickerProviderStateMixin {
     });
   }
 
-  //ensure animations display when it should display
-  _updateRefreshing(bool isRefreshing){
-    Logger.log(TAG, message: "Setting _isRefreshing ($_isRefreshing) to $isRefreshing");
+
+  Future<Null> _updateRefreshing(bool isRefreshing) async {
+    Logger.log(TAG,
+        message: "Setting _isRefreshing ($_isRefreshing) to $isRefreshing");
     if (_isRefreshing) {
       setState(() {
         this._isRefreshing = false;
@@ -155,6 +157,7 @@ class LogInState extends State with TickerProviderStateMixin {
       this._isRefreshing = isRefreshing;
     });
   }
+
 
   //to handle the code verified object
   Future<bool> onCodeVerified(FirebaseUser usr) async{
@@ -283,8 +286,7 @@ class LogInState extends State with TickerProviderStateMixin {
   Future<void> _signInWithPhoneNumber() async {
     final errorMessage = "We couldn't verify your code, please try again!";
 
-    await _auth
-        .linkWithCredential(
+    await _auth.linkWithCredential(
       PhoneAuthProvider.getCredential(
         verificationId: _verificationId,
         smsCode: smsCodeController.text,
@@ -371,10 +373,10 @@ class LogInState extends State with TickerProviderStateMixin {
     await _auth.verifyPhoneNumber(
         phoneNumber: this.phoneNumber,
         timeout: _timeOut,
-        codeSent: _codeSent,
-        codeAutoRetrievalTimeout: _codeAutoRetrievalTimeout,
-        verificationCompleted: _verificationCompleted,
-        verificationFailed: _verificationFailed);
+        codeSent: codeSent,
+        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+        verificationCompleted: verificationCompleted,
+        verificationFailed: verificationFailed);
     Logger.log(TAG, message: "Returning null from _verifyPhoneNumber");
     return null;
   }
