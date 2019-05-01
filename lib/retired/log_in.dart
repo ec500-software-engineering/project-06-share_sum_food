@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:share_sum_food/pages/menu_bar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class LogIn extends StatefulWidget {
@@ -7,12 +6,6 @@ class LogIn extends StatefulWidget {
   State createState() => new LogInState();
 }
 
-GoogleSignIn _googleSignIn = GoogleSignIn(
-  scopes: <String>[
-    'email',
-    'https://www.googleapis.com/auth/contacts.readonly',
-  ],
-);
 
 class LogInState extends State with TickerProviderStateMixin {
   final TextEditingController _pwdController = new TextEditingController();
@@ -58,7 +51,6 @@ class LogInState extends State with TickerProviderStateMixin {
                       child: _passwordBox()),
                   Container(child: submitButton),
                   Spacer(),
-                  Container(child: bottomBar()),
                 ],
               ),
             )

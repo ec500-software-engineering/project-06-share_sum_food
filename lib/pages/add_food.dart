@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'services/crud.dart';
 
+
 class AddFood extends StatefulWidget{
   @override
   _AddFoodState createState() => _AddFoodState();
@@ -115,7 +116,14 @@ class _AddFoodState extends State<AddFood> {
             )
           ],
         ),
-        body: _foodList());
+        body: Column(
+          children: <Widget>[
+            Flexible(
+              child: _foodList()
+            ),
+          ],
+        ),
+     );
   }
 
   Widget _foodList(){
