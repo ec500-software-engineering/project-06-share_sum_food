@@ -2,9 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'dart:async';
-
-import 'package:share_sum_food/pages/services/crud.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -18,19 +15,10 @@ class MapPageState extends State with TickerProviderStateMixin {
   var currentLocation;
   bool mapToggle = false;
 
-  //firestore stuff
-  QuerySnapshot food;
-  crudMethods crudObj = new crudMethods();
-
   List<Marker> foodMarkers = [];
 
   @override
   void initState() {
-    crudObj.getData().then((results) {
-      setState(() {
-        food = results;
-      });
-    });
     super.initState();
     Geolocator().getCurrentPosition().then((currloc) {
       setState(() {
