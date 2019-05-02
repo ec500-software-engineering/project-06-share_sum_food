@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'services/crud.dart';
-
 
 class AddFood extends StatefulWidget{
   @override
@@ -15,6 +16,40 @@ class _AddFoodState extends State<AddFood> {
   QuerySnapshot food;
 
   crudMethods crudObj = new crudMethods();
+
+  void addToList(String query, String foodtype) async{
+    final addQuery = query;
+    var addresses = await Geocoder.local.findAddressesFromQuery(addQuery);
+    if(addresses.length != 0){
+      var first = addresses.first;
+      GeoPoint target = new GeoPoint(first.coordinates.latitude, first.coordinates.longitude);
+      crudObj.addData({
+        'FoodType': foodType,
+        'Location': target
+      });
+      var feature = first.addressLine;
+      print(first.thoroughfare);
+      Fluttertoast.showToast(
+        msg: "Added food at $feature",
+        toastLength: Toast.LENGTH_SHORT,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    }
+    else {
+      Fluttertoast.showToast(
+        msg: "Address not found...",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    }
+  }
 
   Future<bool> addDialog(BuildContext context) async {
     return showDialog(
@@ -46,14 +81,7 @@ class _AddFoodState extends State<AddFood> {
                 textColor: Colors.blue,
                 onPressed: () {
                   Navigator.of(context).pop();
-                  crudObj.addData({
-                    'FoodType': this.foodType,
-                    'Location': this.location
-                  }).then((result) {
-                    dialogTrigger(context);
-                  }).catchError((e) {
-                    print(e);
-                  });
+                  addToList(this.location, this.foodType);
                 },
               )
             ],
@@ -134,7 +162,7 @@ class _AddFoodState extends State<AddFood> {
         itemBuilder: (context, i) {
           return new ListTile(
             title: Text(food.documents[i].data['FoodType']),
-            subtitle: Text(food.documents[i].data['Location'].toString()),
+            subtitle: Text(food.documents[i].data['Location'].latitude.toString()),
           );
         }
       );
