@@ -37,7 +37,7 @@ class MapPageState extends State with TickerProviderStateMixin {
       for(int i = 0; i < food.documents.length; ++i){
         print(food.documents[i].data['FoodType']);
         foodMarkers.add(Marker(
-          markerId: MarkerId(food.documents[i].data['FoodType']),
+          markerId: MarkerId(i.toString()),
           position: LatLng(food.documents[i].data['Location'].latitude, food.documents[i].data['Location'].longitude),
           infoWindow: InfoWindow(title: food.documents[i].data['FoodType']),
         ));
