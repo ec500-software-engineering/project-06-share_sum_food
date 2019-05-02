@@ -23,14 +23,14 @@ class _AddFoodState extends State<AddFood> {
     if(addresses.length != 0){
       var first = addresses.first;
       GeoPoint target = new GeoPoint(first.coordinates.latitude, first.coordinates.longitude);
+      var address = first.addressLine;
       crudObj.addData({
         'FoodType': foodType,
-        'Location': target
+        'Location': target,
+        'Address': address
       });
-      var feature = first.addressLine;
-      print(first.thoroughfare);
       Fluttertoast.showToast(
-        msg: "Added food at $feature",
+        msg: "Added food at $address",
         toastLength: Toast.LENGTH_SHORT,
         timeInSecForIos: 1,
         backgroundColor: Colors.green,
@@ -57,7 +57,7 @@ class _AddFoodState extends State<AddFood> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Add Data', style: TextStyle(fontSize: 15.0)),
+            title: Text('Add sum food to share', style: TextStyle(fontSize: 20.0)),
             content: Column(
               children: <Widget>[
                 TextField(
@@ -77,11 +77,42 @@ class _AddFoodState extends State<AddFood> {
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text('Add'),
+                child: Text('Cancel'),
                 textColor: Colors.blue,
                 onPressed: () {
                   Navigator.of(context).pop();
-                  addToList(this.location, this.foodType);
+                },
+              ),
+              FlatButton(
+                child: Text('Add'),
+                textColor: Colors.blue,
+                onPressed: () {
+                  if(this.foodType == null){
+                    Fluttertoast.showToast(
+                    msg: "Please enter a food type...",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIos: 1,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0
+                    );
+                  }
+                  else if (this.location == null){
+                    Fluttertoast.showToast(
+                    msg: "Please enter a location...",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIos: 1,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0
+                    );
+                  }
+                  else{
+                    Navigator.of(context).pop();
+                    addToList(this.location, this.foodType);
+                  }
                 },
               )
             ],
@@ -124,7 +155,7 @@ class _AddFoodState extends State<AddFood> {
   Widget build (BuildContext context){
      return new Scaffold(
         appBar: AppBar(
-          title: Text('Add sum food to share'),
+          title: Text('Share Sum Food'),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.add),
@@ -162,7 +193,7 @@ class _AddFoodState extends State<AddFood> {
         itemBuilder: (context, i) {
           return new ListTile(
             title: Text(food.documents[i].data['FoodType']),
-            subtitle: Text(food.documents[i].data['Location'].latitude.toString()),
+            subtitle: Text(food.documents[i].data['Address']),
           );
         }
       );
