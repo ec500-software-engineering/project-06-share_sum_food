@@ -120,27 +120,6 @@ class _AddFoodState extends State<AddFood> {
         });
   }
 
-  Future<bool> dialogTrigger(BuildContext context) async {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Job Done', style: TextStyle(fontSize: 15.0)),
-            content: Text('Added'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Alright'),
-                textColor: Colors.blue,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          );
-        });
-  }
-
   @override
   void initState(){
     crudObj.getData().then((results) {
@@ -150,7 +129,6 @@ class _AddFoodState extends State<AddFood> {
     });
     super.initState();
   }
-
   @override
   Widget build (BuildContext context){
      return new Scaffold(
