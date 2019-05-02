@@ -8,8 +8,7 @@ import 'package:share_sum_food/logger.dart';
 import 'dart:async';
 import 'package:share_sum_food/pages/google_sign_in_button.dart';
 import 'package:share_sum_food/pages/main_screen.dart';
-
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LogIn extends StatefulWidget {
   @override
@@ -205,6 +204,7 @@ class LogInState extends State with TickerProviderStateMixin {
   }
 
   _finishSignIn(FirebaseUser user) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     await _onCodeVerified(user).then((result) {
       if (result) {
         // Here, instead of navigating to another screen, you should do whatever you want
