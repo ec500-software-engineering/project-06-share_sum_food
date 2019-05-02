@@ -28,10 +28,10 @@ dependencies:
   shared_preferences: ^0.5.2
   google_maps_flutter:
   geolocator:
+  geocoder:
+  fluttertoast: 
   flutter:
     sdk: flutter
-
-
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,6 +40,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: "^0.7.0"
+
+flutter_icons:
+    android: "launcher_icon"
+    ios: true
+    image_path: "lib/pages/logo.png"
+
 
 
 # For information on the generic Dart part of this file, see the

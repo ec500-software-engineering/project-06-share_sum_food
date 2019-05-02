@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'services/crud.dart';
-
 
 class AddFood extends StatefulWidget{
   @override
@@ -16,13 +17,47 @@ class _AddFoodState extends State<AddFood> {
 
   crudMethods crudObj = new crudMethods();
 
+  void addToList(String query, String foodtype) async{
+    final addQuery = query;
+    var addresses = await Geocoder.local.findAddressesFromQuery(addQuery);
+    if(addresses.length != 0){
+      var first = addresses.first;
+      GeoPoint target = new GeoPoint(first.coordinates.latitude, first.coordinates.longitude);
+      var address = first.addressLine;
+      crudObj.addData({
+        'FoodType': foodType,
+        'Location': target,
+        'Address': address
+      });
+      Fluttertoast.showToast(
+        msg: "Added food at $address",
+        toastLength: Toast.LENGTH_SHORT,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    }
+    else {
+      Fluttertoast.showToast(
+        msg: "Address not found...",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    }
+  }
+
   Future<bool> addDialog(BuildContext context) async {
     return showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Add Data', style: TextStyle(fontSize: 15.0)),
+            title: Text('Add sum food to share', style: TextStyle(fontSize: 20.0)),
             content: Column(
               children: <Widget>[
                 TextField(
@@ -42,39 +77,42 @@ class _AddFoodState extends State<AddFood> {
             ),
             actions: <Widget>[
               FlatButton(
+                child: Text('Cancel'),
+                textColor: Colors.blue,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
                 child: Text('Add'),
                 textColor: Colors.blue,
                 onPressed: () {
-                  Navigator.of(context).pop();
-                  crudObj.addData({
-                    'FoodType': this.foodType,
-                    'Location': this.location
-                  }).then((result) {
-                    dialogTrigger(context);
-                  }).catchError((e) {
-                    print(e);
-                  });
-                },
-              )
-            ],
-          );
-        });
-  }
-
-  Future<bool> dialogTrigger(BuildContext context) async {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Job Done', style: TextStyle(fontSize: 15.0)),
-            content: Text('Added'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Alright'),
-                textColor: Colors.blue,
-                onPressed: () {
-                  Navigator.of(context).pop();
+                  if(this.foodType == null){
+                    Fluttertoast.showToast(
+                    msg: "Please enter a food type...",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIos: 1,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0
+                    );
+                  }
+                  else if (this.location == null){
+                    Fluttertoast.showToast(
+                    msg: "Please enter a location...",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIos: 1,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0
+                    );
+                  }
+                  else{
+                    Navigator.of(context).pop();
+                    addToList(this.location, this.foodType);
+                  }
                 },
               )
             ],
@@ -91,12 +129,11 @@ class _AddFoodState extends State<AddFood> {
     });
     super.initState();
   }
-
   @override
   Widget build (BuildContext context){
      return new Scaffold(
         appBar: AppBar(
-          title: Text('Add sum food to share'),
+          title: Text('Share Sum Food'),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.add),
@@ -134,7 +171,7 @@ class _AddFoodState extends State<AddFood> {
         itemBuilder: (context, i) {
           return new ListTile(
             title: Text(food.documents[i].data['FoodType']),
-            subtitle: Text(food.documents[i].data['Location'].toString()),
+            subtitle: Text(food.documents[i].data['Address']),
           );
         }
       );

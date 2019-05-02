@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:share_sum_food/retired/log_in.dart';
 import 'package:share_sum_food/pages/theme.dart';
 import 'package:share_sum_food/retired/register.dart';
-import 'package:share_sum_food/pages/google_signin.dart';
 import 'package:share_sum_food/pages/google_sign_in_button.dart';
 class LandingPage extends StatefulWidget {
   @override
