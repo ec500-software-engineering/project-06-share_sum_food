@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:share_sum_food/pages/home.dart';
 
 class List extends StatelessWidget {
   
@@ -33,13 +34,14 @@ class List extends StatelessWidget {
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return const Text('Loading...');
                 return ListView.builder(
-                itemExtent: 80.0,
+                itemExtent: 70.0,
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) =>
                   _buildListItem(context, snapshot.data.documents[index]),
                   );
               }),
           ),
+
         ],
       ),
       );
