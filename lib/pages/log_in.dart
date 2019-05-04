@@ -180,7 +180,7 @@ class LogInState extends State with TickerProviderStateMixin {
     };
 
     //handle sign in plz
-    if (user == null){
+//    if (user == null){
       user = await _googleSignIn.signIn().catchError(onError);
       Logger.log(TAG, message: "Received $user");
       final GoogleSignInAuthentication googleAuth = await user.authentication;
@@ -189,47 +189,56 @@ class LogInState extends State with TickerProviderStateMixin {
           GoogleAuthProvider.getCredential(
               idToken: googleAuth.idToken, accessToken: googleAuth.accessToken))
           .catchError(onError);
+      this._googleAccount = user;
+      print (_auth.currentUser().toString());
+      await _finishSignIn(await _auth.currentUser());
+
     }
 
-    if (user != null) {
-      _updateRefreshing(false);
-      this._googleAccount = user;
-      setState(() {
-        this.status = AuthStatus.PHONE_AUTH;
-        Logger.log(TAG, message: "Changed status to $status");
-      });
-      return null;
-    }
-    return null;
-  }
+
+//    if (user != null) {
+//      print("ME NON NULL");
+//      _updateRefreshing(false);
+//      this._googleAccount = user;
+
+//      setState(() {
+//        this.status = AuthStatus.PHONE_AUTH;
+//        Logger.log(TAG, message: "Changed status to $status");
+//      });
+//      return null;
+//    }
+//    return null;
+//  }
 
   _finishSignIn(FirebaseUser user) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await _onCodeVerified(user).then((result) {
-      if (result) {
+//    await _onCodeVerified(user).then((result) {
+//      if (result) {
+        prefs.setString("email", user.email);
+
         // Here, instead of navigating to another screen, you should do whatever you want
         // as the user is already verified with Firebase from both
         // Google and phone number methods
         // Example: authenticate with your own API, use the data gathered
         // to post your profile/user, etc.
-        runApp(new MaterialApp(home: MainScreen(
-            googleUser: _googleAccount,
-            firebaseUser: user
-          )));
-//        Navigator.of(context).pushReplacement(CupertinoPageRoute(
-//          builder: (context) => MainScreen(
+//        runApp(new MaterialApp(home: MainScreen(
 //            googleUser: _googleAccount,
-//            firebaseUser: user,
-//          ),
-//        ));
-      } else {
-        setState(() {
-          this.status = AuthStatus.SMS_AUTH;
-        });
-        _showErrorSnackbar(
-            "We couldn't create your profile for now, please try again later");
-      }
-    });
+//            firebaseUser: user
+//          )));
+        Navigator.of(context).pushReplacement(CupertinoPageRoute(
+          builder: (context) => MainScreen(
+            googleUser: _googleAccount,
+            firebaseUser: user,
+          ),
+        ));
+//      } else {
+//        setState(() {
+//          this.status = AuthStatus.SMS_AUTH;
+//        });
+//        _showErrorSnackbar(
+//            "We couldn't create your profile for now, please try again later");
+//      }
+//    });
   }
   Future<Null> _onRefresh() async {
     switch (this.status) {
@@ -555,6 +564,7 @@ class LogInState extends State with TickerProviderStateMixin {
       ),
     );
   }
+
   Widget _buildBody() {
     Widget body;
     switch (this.status) {
