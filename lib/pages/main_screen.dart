@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:share_sum_food/pages/map_page.dart';
+import 'package:share_sum_food/pages/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:share_sum_food/pages/add_food.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   final GoogleSignInAccount googleUser;
   final FirebaseUser firebaseUser;
 
@@ -13,6 +15,19 @@ class MainScreen extends StatelessWidget {
       : assert(googleUser != null),
         assert(firebaseUser != null),
         super(key: key);
+
+  @override
+  State createState() => new MainScreenState(googleUser, firebaseUser);
+}
+
+class MainScreenState extends State with TickerProviderStateMixin {
+  GoogleSignInAccount googleUser;
+  FirebaseUser firebaseUser;
+
+  MainScreenState(GoogleSignInAccount _googleUser, FirebaseUser _firebaseUser){
+    this.googleUser = _googleUser;
+    this.firebaseUser = _firebaseUser;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +67,12 @@ class MainScreen extends StatelessWidget {
                     color: Theme.of(context).buttonColor,
                     textColor: Colors.black,
                     child: new Text("YES"),
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => MapPage()));
-                    }, //_handleRerouteToMap(context),
+                    onPressed: () async{
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setBool("isFoodSeeker", false);
+                      return Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => AddFood()));
+                    },
                     splashColor: Colors.blue,
                   ),
                   MaterialButton(
@@ -64,7 +81,12 @@ class MainScreen extends StatelessWidget {
                     color: Theme.of(context).buttonColor,
                     textColor: Colors.black,
                     child: new Text("NO"),
-                    onPressed: () => {},
+                    onPressed: () async{
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setBool("isFoodSeeker", true);
+                      return Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => Home()));
+                    },
                     splashColor: Colors.redAccent,
                   ),
                 ],
@@ -74,5 +96,20 @@ class MainScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _handleFoodSeeker(BuildContext context) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("isFoodSeeker", true);
+    return Navigator.push(context, MaterialPageRoute(
+        builder: (context) => Home()));
+  }
+
+
+   _handleFoodProvider(BuildContext context) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("isFoodSeeker", false);
+    return Navigator.push(context, MaterialPageRoute(
+        builder: (context) => AddFood()));
   }
 }
