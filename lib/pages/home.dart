@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share_sum_food/pages/add_food.dart';
 import 'package:share_sum_food/pages/map_page.dart';
+import 'package:share_sum_food/pages/options.dart';
 
 class Home extends StatefulWidget {
  @override
@@ -14,7 +15,7 @@ class _HomeState extends State<Home> {
  final List<Widget> _children = [
    AddFood(),
    MapPage(),
-   AddFood(),
+   Options(),
  ];
 
  @override
@@ -35,7 +36,7 @@ class _HomeState extends State<Home> {
          ),
          BottomNavigationBarItem(
            icon: Icon(Icons.settings),
-           title: Text('Settings')
+           title: Text('Options')
          )
        ],
      ),
