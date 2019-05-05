@@ -71,7 +71,7 @@ class MainScreenState extends State with TickerProviderStateMixin {
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       prefs.setBool("isFoodSeeker", false);
                       return Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => AddFood()));
+                          builder: (context) => Home(isSeeker: false)));
                     },
                     splashColor: Colors.blue,
                   ),
@@ -85,7 +85,7 @@ class MainScreenState extends State with TickerProviderStateMixin {
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       prefs.setBool("isFoodSeeker", true);
                       return Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => Home()));
+                          builder: (context) => Home(isSeeker: true)));
                     },
                     splashColor: Colors.redAccent,
                   ),
