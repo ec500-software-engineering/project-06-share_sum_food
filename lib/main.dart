@@ -14,19 +14,12 @@ void main() async{
   var email = prefs.getString("email");
   print(email);
   var isFoodSeeker = prefs.getBool("isFoodSeeker");
-  print(isFoodSeeker);
+  print("IN MAIN " + isFoodSeeker.toString());
   //this means the user is logged in
   if (email != null && isFoodSeeker != null){
-    if (isFoodSeeker){
       runApp(new MaterialApp(theme: appTheme,
-        home: Home()
+        home: Home(isSeeker: isFoodSeeker)
       ));
-    }
-    else if (!isFoodSeeker){
-      runApp(new MaterialApp(theme: appTheme,
-          home: AddFood()
-      ));
-    }
   }
 
   else if (email == null || isFoodSeeker == null) {
