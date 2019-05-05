@@ -4,22 +4,32 @@ import 'package:share_sum_food/pages/map_page.dart';
 import 'package:share_sum_food/pages/options.dart';
 
 class Home extends StatefulWidget {
+  final bool isSeeker;
+  const Home({@required this.isSeeker});
  @override
  State<StatefulWidget> createState() {
-    return _HomeState();
+    return _HomeState(isSeeker);
   }
 }
 
 class _HomeState extends State<Home> {
+  static bool IsSeeker;
+  _HomeState(bool _isSeeker){
+      IsSeeker = _isSeeker;
+      print(IsSeeker);
+  }
+
  int _currentIndex = 1;
- final List<Widget> _children = [
-   AddFood(),
-   MapPage(),
-   Options(),
- ];
+
 
  @override
  Widget build(BuildContext context) {
+   print("IN HOME  " + IsSeeker.toString());
+   List<Widget> _children = [
+     AddFood(isSeeker: IsSeeker),
+     MapPage(),
+     Options(),
+   ];
    return Scaffold(
      body: _children[_currentIndex],
      bottomNavigationBar: BottomNavigationBar(
